@@ -130,7 +130,7 @@ example folder; C and PureBasic `build.bat` copy it beside the exe).
 
 ## 6b. Licenses
 
-- `LICENSE` added: the standard zlib/libpng text, copyright holder Mark Sibly, because the original README says
+- `LICENSE.txt` added: the standard zlib/libpng text, copyright holder Mark Sibly, because the original README says
   "Zlib/PNG" but the repository had no license file (no year given: none could be verified).
 - `THIRD_PARTY_LICENSES.txt` added: verbatim license texts of everything linked into `sgd_dynamic.dll` (Dawn/Tint, abseil,
   SPIRV-Tools/Headers, Vulkan-Headers, DirectX-Headers, glfw, imgui, curl, SoLoud with its bundled stb_vorbis and dr_libs,
