@@ -3,10 +3,13 @@
 LibSGD is a simple game development library with a high level 'scene graph' style API. The public API is plain C
 (`include/sgd/sgd.h`), so it can be used from C/C++, BlitzMax, PureBasic, Python (ctypes), Blitz3D and more.
 
-This is LibSGD **v0.16** (the last release by its original author, Mark Sibly), brought back to a working state with
-current libraries: Dawn (WebGPU) `v20260423.175430`, curl 8.22.0, glfw 3.5.1, imgui 1.92.7, stb and tinyexr updated,
-and the defunct online asset server removed. No new engine features have been added. LibSGD is licensed under the
+This is LibSGD **v0.16**, the last tagged release by its original author, Mark Sibly, brought back to a working state with
+current libraries: Dawn (WebGPU) `v20260423.175430`, curl 8.22.0, glfw 3.5.1, imgui 1.92.7, and updated stb and tinyexr, and
+the defunct online asset server has been removed. No new engine features have been added. LibSGD is licensed under the
 Zlib/PNG license.
+
+Rebuilt by DruggedBunny with Claude (Anthropic's Claude Code, Claude Sonnet 5.5), which did much of the porting, build
+fixing, examples, packaging and documentation.
 
 ## Requirements
 
@@ -67,4 +70,4 @@ The BlitzMax wrapper `examples/blitzmax/sgd.bmx` was generated from this version
 * The log shows `File IO Error: Asset not found ... _Metalness.jpg` when loading some PBR materials. That is harmless:
   the loader looks for optional texture files and carries on without them.
 * Source code and full build instructions: https://github.com/DruggedBunny/libsgd (branch `release-working`).
-  See `CHANGES_FROM_V0.16.md` for everything that changed from the original v0.16.
+  See `CHANGES_FROM_V0.16.md` for everything that was changed to get v0.16 building again.
