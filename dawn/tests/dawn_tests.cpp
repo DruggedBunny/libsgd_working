@@ -56,7 +56,9 @@ int main() {
 		config.device = device;
 		config.width = width;
 		config.height = height;
-		config.format = surface.GetPreferredFormat(device.GetAdapter());
+		wgpu::SurfaceCapabilities surfCaps{};
+		if (surface.GetCapabilities(device.GetAdapter(), &surfCaps) != wgpu::Status::Success || !surfCaps.formatCount) std::abort();
+		config.format = surfCaps.formats[0];
 		config.usage = wgpu::TextureUsage::RenderAttachment;
 		config.presentMode = wgpu::PresentMode::Fifo;
 		config.viewFormatCount = 0;

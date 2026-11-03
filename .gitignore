@@ -30,3 +30,4 @@ out
 # python cache and virtual environment
 __pycache__
 venv
+cmake_*.log

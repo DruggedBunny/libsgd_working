@@ -97,13 +97,11 @@ Expected<Path, FileioEx> findSgdAsset(CString url) {
 	for (auto& dir : dirs) {
 		auto path = dir / rel;
 		if (path.isFile()) return path;
-		tried += "
-  " + path.str();
+		tried += "\n  " + path.str();
 	}
 
 	return SGD_FILEIOEX("Asset not found: " + String(url) +
-						"
-Extract libsgd_assets beside the libsgd folder, or set LIBSGD_ASSETS or config var sgd.assetsDir. Looked in:" + tried);
+						"\nExtract libsgd_assets beside the libsgd folder, or set LIBSGD_ASSETS or config var sgd.assetsDir. Looked in:" + tried);
 }
 
 CURL* g_curl;
