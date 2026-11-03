@@ -121,7 +121,7 @@ Things found while testing (useful for the write-up):
 `package_windows.ps1` (repo root) builds `_dist\libsgd-win64.zip` (about 5 MB) with a top-level `libsgd` folder:
 
 ```
-libsgd\  README.md  VERSIONS.txt  CHANGES_FROM_V0.16.md
+libsgd\  README.md  VERSIONS.txt  CHANGES.md
          include\sgd\*.h
          lib\sgd_dynamic.dll  sgd_dynamic.lib
          examples\c  blitzmax  python  purebasic     (sources + build.bat/run.bat, no binaries; plane_insane.mp3)
