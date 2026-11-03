@@ -54,7 +54,7 @@ int main() {
 	static auto configureSurface = [=](CVec2u size) {
 
 		wgpu::SurfaceCapabilities surfCaps{};
-		if (surface.GetCapabilities(device.GetAdapter(), &surfCaps) || !surfCaps.formatCount) std::abort();
+		if (surface.GetCapabilities(device.GetAdapter(), &surfCaps) != wgpu::Status::Success || !surfCaps.formatCount) std::abort();
 
 		wgpu::SurfaceConfiguration config{};
 		config.device = device;

@@ -11,6 +11,14 @@
 #undef min
 #undef max
 
+#if SGD_OS_WINDOWS
+#include <windows.h>
+#undef min
+#undef max
+#else
+#include <dlfcn.h>
+#endif
+
 namespace sgd {
 
 namespace {
@@ -20,11 +28,58 @@ constexpr auto sgdPrefix = "sgd://";
 // sgd:// URLs are always resolved from local disk, never fetched. Search order:
 //   1. config var sgd.assetsDir
 //   2. environment variable LIBSGD_ASSETS
-//   3. ~/.sgd/assets
+//   3. a 'libsgd_assets' folder beside (or above) the LibSGD library, the program, or the current directory, so a
+//      distribution with libsgd/ and libsgd_assets/ side by side just works
+//   4. ~/.sgd/assets
 String g_assetsDir;
 auto g_assetsDirInit = configVarChanged("sgd.assetsDir").connect(nullptr, [](CString value) { g_assetsDir = value; });
 
+constexpr auto assetsDirName = "libsgd_assets";
+
 Path g_defaultAssetsDir("~/.sgd/assets");
+
+#if SGD_OS_WINDOWS
+std::filesystem::path moduleDir(HMODULE module) {
+	wchar_t buf[MAX_PATH * 4];
+	auto n = GetModuleFileNameW(module, buf, (DWORD)std::size(buf));
+	if (!n || n >= std::size(buf)) return {};
+	return std::filesystem::path(buf).parent_path();
+}
+std::filesystem::path libraryDir() {
+	HMODULE module{};
+	if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+							(LPCWSTR)&libraryDir, &module))
+		return {};
+	return moduleDir(module);
+}
+std::filesystem::path exeDir() {
+	return moduleDir(nullptr);
+}
+#else
+std::filesystem::path libraryDir() {
+	Dl_info info;
+	if (!dladdr((void*)&libraryDir, &info) || !info.dli_fname) return {};
+	return std::filesystem::path(info.dli_fname).parent_path();
+}
+std::filesystem::path exeDir() {
+	std::error_code ec;
+	auto p = std::filesystem::read_symlink("/proc/self/exe", ec);
+	return ec ? std::filesystem::path() : p.parent_path();
+}
+#endif
+
+void findAssetsDirsFrom(std::filesystem::path dir, std::vector<Path>& dirs) {
+	std::error_code ec;
+	if (dir.empty()) return;
+	dir = std::filesystem::absolute(dir, ec);
+	for (int i = 0; i < 6 && !dir.empty(); ++i) {
+		Path cand(dir / assetsDirName);
+		if (cand.isDir() && std::find(dirs.begin(), dirs.end(), cand) == dirs.end()) dirs.push_back(cand);
+		auto parent = dir.parent_path();
+		if (parent == dir) break;
+		dir = parent;
+	}
+}
 
 Expected<Path, FileioEx> findSgdAsset(CString url) {
 	auto rel = Path(url.substr(6));
@@ -32,6 +87,10 @@ Expected<Path, FileioEx> findSgdAsset(CString url) {
 	std::vector<Path> dirs;
 	if (!g_assetsDir.empty()) dirs.emplace_back(g_assetsDir);
 	if (auto env = std::getenv("LIBSGD_ASSETS"); env && *env) dirs.emplace_back(env);
+	findAssetsDirsFrom(libraryDir(), dirs);
+	findAssetsDirsFrom(exeDir(), dirs);
+	std::error_code ec;
+	findAssetsDirsFrom(std::filesystem::current_path(ec), dirs);
 	dirs.push_back(g_defaultAssetsDir);
 
 	String tried;
@@ -41,7 +100,8 @@ Expected<Path, FileioEx> findSgdAsset(CString url) {
 		tried += "\n  " + path.str();
 	}
 
-	return SGD_FILEIOEX("Asset not found: " + String(url) + "\nSet LIBSGD_ASSETS or config var sgd.assetsDir. Looked in:" + tried);
+	return SGD_FILEIOEX("Asset not found: " + String(url) +
+						"\nExtract libsgd_assets beside the libsgd folder, or set LIBSGD_ASSETS or config var sgd.assetsDir. Looked in:" + tried);
 }
 
 CURL* g_curl;
