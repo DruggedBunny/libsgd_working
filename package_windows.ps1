@@ -24,7 +24,7 @@ New-Item -ItemType Directory "$pkg\lib" | Out-Null
 Copy-Item "$inst\lib\sgd_dynamic.dll", "$inst\lib\sgd_dynamic.lib" "$pkg\lib"
 Copy-Item "$inst\VERSIONS.txt" $pkg
 Copy-Item "$root\dist\README.md" "$pkg\README.md"
-Copy-Item "$root\CHANGES_FROM_V0.16.md" $pkg
+Copy-Item "$root\CHANGES.md" $pkg
 
 # Examples: sources + build scripts only (no binaries, no DLL copies, no BlitzMax build dirs)
 Copy-Item "$root\examples" "$pkg\examples" -Recurse

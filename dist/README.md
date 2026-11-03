@@ -3,8 +3,8 @@
 LibSGD is a simple game development library with a high level 'scene graph' style API. The public API is plain C
 (`include/sgd/sgd.h`), so it can be used from C/C++, BlitzMax, PureBasic, Python (ctypes), Blitz3D and more.
 
-This is LibSGD **v0.16** (the last release by its original author, Mark Sibly), brought back to a working state with
-current libraries: Dawn (WebGPU) `v20260423.175430`, curl 8.22.0, glfw 3.5.1, imgui 1.92.7, stb and tinyexr updated,
+This is LibSGD **v0.18.0** (the final development state, 2 Nov 2024, by its original author Mark Sibly; the last tagged
+release was v0.16), brought back to a working state with current libraries: Dawn (WebGPU) `v20260423.175430`, curl 8.22.0, glfw 3.5.1, imgui 1.92.7, stb and tinyexr updated,
 and the defunct online asset server removed. No new engine features have been added. LibSGD is licensed under the
 Zlib/PNG license.
 
@@ -53,7 +53,7 @@ Each folder in `examples` has a `build.bat` (or `run.bat`). They need the matchi
 | Folder | Language | Needs |
 |---|---|---|
 | `examples/c` | C | MinGW-w64 gcc (or MSVC, see `build.bat`) |
-| `examples/blitzmax` | BlitzMax NG (`min_demo`, `complex_demo`) | BlitzMax NG, 64-bit |
+| `examples/blitzmax` | BlitzMax NG (`min_demo`, `complex_demo`, `plane_insane`) | BlitzMax NG, 64-bit |
 | `examples/python` | Python 3 (ctypes, no extra packages) | 64-bit Python |
 | `examples/purebasic` | PureBasic | PureBasic 64-bit |
 
@@ -66,5 +66,5 @@ The BlitzMax wrapper `examples/blitzmax/sgd.bmx` was generated from this version
 
 * The log shows `File IO Error: Asset not found ... _Metalness.jpg` when loading some PBR materials. That is harmless:
   the loader looks for optional texture files and carries on without them.
-* Source code and full build instructions: https://github.com/DruggedBunny/libsgd (branch `release-working`).
-  See `CHANGES_FROM_V0.16.md` for everything that changed from the original v0.16.
+* Source code and full build instructions: https://github.com/DruggedBunny/libsgd (branch `develop-working`).
+  See `CHANGES.md` for everything that changed from the original v0.16.
