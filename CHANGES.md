@@ -1,7 +1,7 @@
 # Changes needed to get LibSGD (develop, v0.18.0) building and running again
 
 Base: `blitz-research/libsgd` `develop` @ `67b933a` (2024-11-02, "Fix spotlight shadows and material serialization"),
-whose `VERSIONS.txt` calls it v0.18.0. Forked to `DruggedBunny/libsgd`. Working branch: `develop-working`.
+whose `VERSIONS.txt` calls it v0.18.0. Forked to `DruggedBunny/libsgd_working` (renamed from `libsgd`). Working branch: `develop-working`.
 (A smaller v0.16-based variant, the last tagged release, is on branch `release-working`.)
 
 `develop` is 25 commits / 88 files ahead of v0.16; see section 8 for what that adds. Only changes needed to build and

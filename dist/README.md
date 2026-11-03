@@ -89,5 +89,5 @@ The BlitzMax wrapper `examples/blitzmax/sgd.bmx` was generated from this version
 
 * The log shows `File IO Error: Asset not found ... _Metalness.jpg` when loading some PBR materials. That is harmless:
   the loader looks for optional texture files and carries on without them.
-* Source code and full build instructions: https://github.com/DruggedBunny/libsgd (branch `develop-working`).
+* Source code and full build instructions: https://github.com/DruggedBunny/libsgd_working (branch `develop-working`).
   See `CHANGES.md` for everything that was changed to get Mark's `develop` branch building again, and for what `develop` adds to v0.16.
