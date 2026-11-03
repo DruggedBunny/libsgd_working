@@ -7,7 +7,7 @@
 
 ' Set CAMERA_PITCH_INVERT to True to invert pitch control
 
-Include "sgd.bmx"
+Include "../sgd.bmx"
 
 Const FULL_SCREEN:Int = False
 'Const FULL_SCREEN:Int = True ' Keyboard control too twitchy. Vsync??
@@ -18,7 +18,7 @@ Const CAMERA_PITCH_INVERT:Int = False ' True to flip look-up/down on Xbox pad
 ' call SGD.LoadSGD to import LibSGD. Distribution demo requires
 ' custom path, hence:
 
-SGD.LoadSGD "../../lib/sgd_dynamic.dll"
+SGD.LoadSGD "../../../lib/sgd_dynamic.dll"
 
 SGD.Init ' Normal SGD setup call
 

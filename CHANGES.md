@@ -88,7 +88,7 @@ Tested on Windows 11, RTX 3060, D3D12 backend (Dawn picks it automatically), wit
 | Example | Result |
 |---|---|
 | C (`examples/c/assets_test.c`, MinGW gcc) | OK: skybox, PBR materials, model, 2D text; ~6000+ RPS |
-| BlitzMax `min_demo`, `complex_demo`, `plane_insane` (BlitzMax NG, x64) | OK: sky, ground, shadows, 10k cubes, UTF-8 title; plane_insane exercises the new plane entity, materials, fog and 2D text |
+| BlitzMax `min_demo`, `complex_demo`, `plane_insane`, `island`, `stuporman` (BlitzMax NG, x64) | OK, each run from its own folder in an extracted distribution: sky, ground, shadows, 10k cubes, UTF-8 title; plane_insane exercises the new plane entity, materials, fog and 2D text; island loads terrain, trees and sounds (~75 FPS); stuporman starts beside a hillside so the view is mostly green |
 | Python (`examples/python/ctypes_test.py`, ctypes) | OK after fix below |
 | PureBasic 64-bit (`examples/purebasic/assets_test.pb`) | OK after fix below |
 
@@ -132,6 +132,22 @@ The assets zip (`libsgd_assets`) is distributed separately and extracted beside 
 
 Examples find the DLL at `../../lib/sgd_dynamic.dll` (BlitzMax: relative to the working directory, so run from the
 example folder; C and PureBasic `build.bat` copy it beside the exe).
+
+## 6a. BlitzMax demos (from `N:\libsgd_demos`)
+
+Added to `examples/blitzmax`, one folder per demo, sharing one generated `sgd.bmx`:
+`min_demo`, `complex_demo` (the tuned copies, not v0.16's), `plane_insane` (+ `plane_insane.mp3`), `island` (the newer
+"Island of the Emplanted" `plane.bmx` + `media/`; the older `Emplanted` copy has the same media and is not included), and
+`stuporman` (`neodemo.bmx` + `neodemo/media/`). Not included: `plane_insane_web` (Emscripten build), the demos' own
+copies of `sgd.bmx`/DLLs, and the duplicate `plane_insane/assets` folder (assets come from `libsgd_assets`).
+
+Adjustments made to each: `Include "../sgd.bmx"` and `SGD.LoadSGD "../../../lib/sgd_dynamic.dll"` (paths relative to
+the demo folder, which is the run folder). Individual fixes: `complex_demo` `CreateBulletSprite` needs a `:Int` return
+type; `island` declared `sin_angle:Double` where a `Float` helper was called (`Sin` returns Double, newer wrapper types
+exposed it), now `Float`; `island` forced the Vulkan backend with `SetConfigVar "dawn.backendType"`, now commented out
+(default D3D12; uncomment to test Vulkan). `build.bat` builds every demo; note `bmk` does not set an error exit code.
+
+Build outputs (`*.exe`, `.bmx` folders) are never packaged: `package_windows.ps1` strips them and `.gitignore` ignores them.
 
 ## 7. Deliberately NOT included (from the later `develop`/`dawn-upgrade` work)
 

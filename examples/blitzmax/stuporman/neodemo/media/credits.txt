@@ -1,0 +1,16 @@
+' Model credits -- thanks to the authors!
+
+' Unmodified GLTF models from sources below.
+
+' Model: "A little Irish island"
+
+' 		Author
+
+'			John Huikku:	https://poly.google.com/user/1b9F61Bj5l9
+'			Source:			https://poly.google.com/view/6G3x4Sgg6iX
+
+'		License
+
+'			Attribution 3.0 Unported (CC BY 3.0) aka. "CC-BY 3.0"
+'			https://creativecommons.org/licenses/by/3.0/
+'			https://support.google.com/poly/answer/7418679

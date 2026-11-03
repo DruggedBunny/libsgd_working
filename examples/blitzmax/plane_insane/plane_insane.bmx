@@ -7,13 +7,13 @@
 
 ' Set CAMERA_PITCH_INVERT to True to invert pitch control
 
-Include "sgd.bmx"
+Include "../sgd.bmx"
 
 Const FULL_SCREEN:Int = False
 
 Const CAMERA_PITCH_INVERT:Int = False
 
-SGD.LoadSGD "../../lib/sgd_dynamic.dll"
+SGD.LoadSGD "../../../lib/sgd_dynamic.dll"
 
 SGD.Init
 

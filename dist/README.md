@@ -53,12 +53,25 @@ Each folder in `examples` has a `build.bat` (or `run.bat`). They need the matchi
 | Folder | Language | Needs |
 |---|---|---|
 | `examples/c` | C | MinGW-w64 gcc (or MSVC, see `build.bat`) |
-| `examples/blitzmax` | BlitzMax NG (`min_demo`, `complex_demo`, `plane_insane`) | BlitzMax NG, 64-bit |
+| `examples/blitzmax` | BlitzMax NG demos (see below) | BlitzMax NG, 64-bit |
 | `examples/python` | Python 3 (ctypes, no extra packages) | 64-bit Python |
 | `examples/purebasic` | PureBasic | PureBasic 64-bit |
 
 Run the examples from their own folder. Press ESC to quit. Each prints `frames=... rps=...` when run with a frame
 count, e.g. `assets_test.exe 300`.
+
+### BlitzMax demos
+
+`examples/blitzmax/build.bat` builds them all; each demo lives in its own folder and must be run from that folder
+(it loads `../../../lib/sgd_dynamic.dll` and its media by relative path). They share `examples/blitzmax/sgd.bmx`.
+
+| Demo | Shows |
+|---|---|
+| `min_demo` | Minimal scene: skybox, ground material, shadow-casting cube, fly camera (WASD + cursors) |
+| `complex_demo` | 10,000 cubes, bullet sprites, point-light shadows, UTF-8 text |
+| `plane_insane` | Plane entities, PBR materials, music, fog, cycling "insanity" colours (press I) |
+| `island` | "Island of the Emplanted", an eco-blaster: terrain, trees, explosions, sound. Model credits are in the source header |
+| `stuporman` | Walk/fly around a glTF landscape (SPACE toggles). Model credits in `neodemo/media/credits.txt` |
 
 The BlitzMax wrapper `examples/blitzmax/sgd.bmx` was generated from this version's header.
 

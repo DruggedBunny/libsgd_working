@@ -23,7 +23,7 @@
 ' Set CAMERA_PITCH_INVERT to True to invert pitch control
 ' Set SOUND_ON to False to turn off shot sounds
 
-Include "sgd.bmx"
+Include "../sgd.bmx"
 
 Const FULL_SCREEN:Int = False
 'Const FULL_SCREEN:Int = True ' Keyboard control too twitchy. Vsync??
@@ -41,7 +41,7 @@ Const SHADOWS_ON:Int = True
 
 ' LibSGD demo distribution path:
 
-SGD.LoadSGD "../../lib/sgd_dynamic.dll"
+SGD.LoadSGD "../../../lib/sgd_dynamic.dll"
 
 SGD.Init		' Standard LibSGD Init call
 
@@ -72,10 +72,10 @@ Global Shot2:TSound' = LoadSound ("shot2.ogg")
 ' Ground materials -- uncomment one:
 ' -----------------------------------------------------------------------------
 
-Local ground_textures:String = "Tiles019_1K-JPG"
+'Local ground_textures:String = "Tiles019_1K-JPG"
 'Local ground_textures:String = "Tiles093_1K-JPG"
 'Local ground_textures:String = "Bricks076C_1K-JPG"
-'Local ground_textures:String = "PavingStones119_1K-JPG"
+Local ground_textures:String = "PavingStones119_1K-JPG"
 'Local ground_textures:String = "PavingStones131_1K-JPG"
 
 ' -----------------------------------------------------------------------------
@@ -83,8 +83,8 @@ Local ground_textures:String = "Tiles019_1K-JPG"
 ' -----------------------------------------------------------------------------
 
 'Local sky_texture:String = "nightsky-cube.png"
-Local sky_texture:String = "stormy-cube.jpg"
-'Local sky_texture:String = "sunnysky-cube.png"
+'Local sky_texture:String = "stormy-cube.jpg"
+Local sky_texture:String = "sunnysky-cube.png"
 
 ' -----------------------------------------------------------------------------
 ' Selections from above...
@@ -120,6 +120,8 @@ Local strafe:Double = 0.0
 Local rise:Double = 0.0
 Local z:Double = 0.0
 
+InitFullscreenState ()
+
 Repeat
 
 	' Get window events...
@@ -130,6 +132,10 @@ Repeat
 	
 	If SGD.IsKeyHit (SGD.KEY_ESCAPE) Or events & SGD.EVENT_MASK_CLOSE_CLICKED
 		quit = True
+	EndIf
+	
+	If SGD.IsKeyHit (SGD.KEY_F11)
+		ToggleFullscreen ()
 	EndIf
 	
 	' Update cubes...
@@ -265,6 +271,9 @@ Repeat
 	Bullet.UpdateBullets
 	
 	' Render/show!
+	
+	SGD.Clear2D
+	SGD.Draw2DText "FPS: " + SGD.GetFPS (), 20, 20
 	
 	SGD.RenderScene
 	SGD.Present
@@ -538,7 +547,7 @@ Function demo_CreateScene (num_cubes:Int = 10000, ground_scale:Float = 1.0, grou
 
 End Function
 
-Function demo_GetStaticCubeMesh:Int (cube_material_path:String = "sgd://materials/Tiles019_1K-JPG")
+Function demo_GetStaticCubeMesh:Int (cube_material_path:String = "sgd://materials/PavingStones131_1K-JPG")
 
 	If Not CubeMesh
 
@@ -618,4 +627,28 @@ End Type
 
 Function temp_EntityDistance:Float (src:Int, dest:Int)
 	Return Sqr ((SGD.GetEntityX (src) - SGD.GetEntityX (dest)) ^ 2 + (SGD.GetEntityY (src) - SGD.GetEntityY (dest)) ^ 2 + (SGD.GetEntityZ (src) - SGD.GetEntityZ (dest)) ^ 2)
+End Function
+
+' Fullscreen state: TODO! Doesn't account for initial fullscreen state!
+
+Global WindowState:Int
+Global NonFullScreenWindowState:Int
+
+Function InitFullscreenState ()
+	WindowState = SGD.GetWindowState ()
+	NonFullScreenWindowState = WindowState
+End Function
+
+Function ToggleFullscreen ()
+
+	' Sometimes long pauses...
+	
+	WindowState = SGD.GetWindowState ()
+	
+	If WindowState = SGD.WINDOW_STATE_FULLSCREEN
+		SGD.SetWindowState (NonFullScreenWindowState)
+	Else
+		SGD.SetWindowState (SGD.WINDOW_STATE_FULLSCREEN)
+	EndIf
+		
 End Function
