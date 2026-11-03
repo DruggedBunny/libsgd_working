@@ -12,6 +12,12 @@ asset server has been removed. No new engine features have been added. LibSGD is
 Rebuilt by DruggedBunny with Claude (Anthropic's Claude Code, Claude Sonnet 5.5), which did much of the porting, build
 fixing, examples, packaging and documentation.
 
+## Licenses
+
+LibSGD is licensed under the Zlib/PNG license (`LICENSE`). The DLL statically links other open source libraries (Dawn,
+imgui, curl, glfw, SoLoud, stb, ...), each under its own license: their notices are in `THIRD_PARTY_LICENSES.txt`.
+Redistribute that file with `sgd_dynamic.dll`.
+
 ## Requirements
 
 * Windows 10/11, 64-bit, with a GPU and driver supporting Direct3D 12 (Vulkan is used as a fallback on older systems).

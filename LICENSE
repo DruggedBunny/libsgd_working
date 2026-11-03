@@ -1,0 +1,35 @@
+LibSGD
+Copyright (c) Mark Sibly
+
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose,
+including commercial applications, and to alter it and redistribute it
+freely, subject to the following restrictions:
+
+   1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment in the product documentation would be
+   appreciated but is not required.
+
+   2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+
+   3. This notice may not be removed or altered from any source
+   distribution.
+
+-------------------------------------------------------------------------------
+
+Notes:
+
+* LibSGD is licensed under the Zlib/PNG license, as stated in the README of the
+  original project (https://github.com/blitz-research/libsgd). The original
+  repository does not contain a license file; the standard zlib/libpng text is
+  reproduced above with the original author as the copyright holder.
+
+* This repository is an altered version of LibSGD, rebuilt so that it builds and
+  runs with current libraries. See README.md and CHANGES.md for what was changed.
+
+* The libraries LibSGD uses have their own licenses: see THIRD_PARTY_LICENSES.txt.
