@@ -31,3 +31,8 @@ out
 __pycache__
 venv
 cmake_*.log
+_dist
+examples/**/*.exe
+examples/**/*.dll
+examples/**/*.lib
+examples/**/.bmx
