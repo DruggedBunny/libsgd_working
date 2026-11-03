@@ -1,6 +1,7 @@
 #include "fetch.h"
 
 #include "appevent.h"
+#include "config.h"
 #include "fileio.h"
 #include "log.h"
 #include "path.h"
@@ -10,11 +11,13 @@
 #undef min
 #undef max
 
-#include <json11.hpp>
-
-#include <thread>
-
-using namespace json11;
+#if SGD_OS_WINDOWS
+#include <windows.h>
+#undef min
+#undef max
+#else
+#include <dlfcn.h>
+#endif
 
 namespace sgd {
 
@@ -22,89 +25,85 @@ namespace {
 
 constexpr auto sgdPrefix = "sgd://";
 
-Path g_cacheDir("~/.sgd/cache");
+// sgd:// URLs are always resolved from local disk, never fetched. Search order:
+//   1. config var sgd.assetsDir
+//   2. environment variable LIBSGD_ASSETS
+//   3. a 'libsgd_assets' folder beside (or above) the LibSGD library, the program, or the current directory, so a
+//      distribution with libsgd/ and libsgd_assets/ side by side just works
+//   4. ~/.sgd/assets
+String g_assetsDir;
+auto g_assetsDirInit = configVarChanged("sgd.assetsDir").connect(nullptr, [](CString value) { g_assetsDir = value; });
 
-Path g_cacheFilesPath(g_cacheDir / "files.json");
+constexpr auto assetsDirName = "libsgd_assets";
 
-std::map<String, String> g_cacheFiles;
+Path g_defaultAssetsDir("~/.sgd/assets");
 
-size_t g_nextFileId;
+#if SGD_OS_WINDOWS
+std::filesystem::path moduleDir(HMODULE module) {
+	wchar_t buf[MAX_PATH * 4];
+	auto n = GetModuleFileNameW(module, buf, (DWORD)std::size(buf));
+	if (!n || n >= std::size(buf)) return {};
+	return std::filesystem::path(buf).parent_path();
+}
+std::filesystem::path libraryDir() {
+	HMODULE module{};
+	if (!GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+							(LPCWSTR)&libraryDir, &module))
+		return {};
+	return moduleDir(module);
+}
+std::filesystem::path exeDir() {
+	return moduleDir(nullptr);
+}
+#else
+std::filesystem::path libraryDir() {
+	Dl_info info;
+	if (!dladdr((void*)&libraryDir, &info) || !info.dli_fname) return {};
+	return std::filesystem::path(info.dli_fname).parent_path();
+}
+std::filesystem::path exeDir() {
+	std::error_code ec;
+	auto p = std::filesystem::read_symlink("/proc/self/exe", ec);
+	return ec ? std::filesystem::path() : p.parent_path();
+}
+#endif
 
-bool g_cacheOk = false;
-
-bool initCache() {
-	static bool done;
-	if (done) return g_cacheOk;
-	done = true;
-
-	if (!g_cacheDir.isDir()) {
-		g_cacheDir.createDir(true);
-		SGD_ASSERT(g_cacheDir.isDir());
+void findAssetsDirsFrom(std::filesystem::path dir, std::vector<Path>& dirs) {
+	std::error_code ec;
+	if (dir.empty()) return;
+	dir = std::filesystem::absolute(dir, ec);
+	for (int i = 0; i < 6 && !dir.empty(); ++i) {
+		Path cand(dir / assetsDirName);
+		if (cand.isDir() && std::find(dirs.begin(), dirs.end(), cand) == dirs.end()) dirs.push_back(cand);
+		auto parent = dir.parent_path();
+		if (parent == dir) break;
+		dir = parent;
 	}
-
-	if (!g_cacheFilesPath.isFile()) {
-		saveString("{}", g_cacheFilesPath);
-		SGD_ASSERT(g_cacheFilesPath.isFile());
-	}
-
-	auto src = loadString(g_cacheFilesPath);
-	SGD_ASSERT(src);
-
-	String err;
-	auto json = Json::parse(src.result(), err, JsonParse::COMMENTS);
-	SGD_ASSERT(json.is_object());
-
-	for (auto& kv : json.object_items()) {
-		g_cacheFiles.insert(std::make_pair(kv.first, kv.second.string_value()));
-		++g_nextFileId;
-	}
-
-	SGD_LOG << "Asset cache initialized";
-
-	return g_cacheOk = true;
 }
 
-void saveCacheState() {
-	if (!g_cacheOk) return;
+Expected<Path, FileioEx> findSgdAsset(CString url) {
+	auto rel = Path(url.substr(6));
 
-	Json::object obj;
-	for (auto& kv : g_cacheFiles) {
-		obj.insert(std::make_pair(kv.first, kv.second));
+	std::vector<Path> dirs;
+	if (!g_assetsDir.empty()) dirs.emplace_back(g_assetsDir);
+	if (auto env = std::getenv("LIBSGD_ASSETS"); env && *env) dirs.emplace_back(env);
+	findAssetsDirsFrom(libraryDir(), dirs);
+	findAssetsDirsFrom(exeDir(), dirs);
+	std::error_code ec;
+	findAssetsDirsFrom(std::filesystem::current_path(ec), dirs);
+	dirs.push_back(g_defaultAssetsDir);
+
+	String tried;
+	for (auto& dir : dirs) {
+		auto path = dir / rel;
+		if (path.isFile()) return path;
+		tried += "
+  " + path.str();
 	}
-	String src;
-	Json(std::move(obj)).dump(src);
 
-	auto r = saveString(src, g_cacheFilesPath);
-	SGD_ASSERT(r);
-}
-
-Path cacheFile(CString url) {
-	if (!startsWith(url, sgdPrefix) || !initCache()) return {};
-
-	auto key = url.substr(6);
-
-	auto it = g_cacheFiles.find(key);
-	if (it == g_cacheFiles.end()) return {};
-
-	return g_cacheDir / Path(it->second);
-}
-
-void cacheFile(CString url, const void* data, size_t size) {
-	if (!g_cacheOk || !startsWith(url, sgdPrefix)) return;
-
-	auto key = url.substr(6);
-
-	SGD_ASSERT(g_cacheFiles.find(key) == g_cacheFiles.end());
-
-	auto file = std::to_string(++g_nextFileId) + Path(url).ext();
-	auto path = g_cacheDir / file;
-
-	auto r = saveData(data, size, path);
-	SGD_ASSERT(r);
-
-	g_cacheFiles.insert(std::make_pair(key, file));
-
-	saveCacheState();
+	return SGD_FILEIOEX("Asset not found: " + String(url) +
+						"
+Extract libsgd_assets beside the libsgd folder, or set LIBSGD_ASSETS or config var sgd.assetsDir. Looked in:" + tried);
 }
 
 CURL* g_curl;
@@ -127,16 +126,9 @@ CURL* openCurl() {
 }
 
 Expected<bool, FileioEx> fetch(CString url, curl_write_callback writeFunc, void* writeData) {
-
-	auto turl = url;
-	if (startsWith(url, sgdPrefix)) {
-		static const String SGD_URL = "https://skirmish-dev.net/assets/";
-		turl = SGD_URL + url.substr(6);
-	}
-
 	auto curl = openCurl();
 
-	curl_easy_setopt(curl, CURLOPT_URL, turl.c_str());
+	curl_easy_setopt(curl, CURLOPT_URL, String(url).c_str());
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeFunc);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, writeData);
 
@@ -154,7 +146,11 @@ Expected<bool, FileioEx> fetch(CString url, curl_write_callback writeFunc, void*
 } // namespace
 
 Expected<String, FileioEx> fetchString(CString url) {
-	if (auto path = cacheFile(url)) return loadString(path);
+	if (startsWith(url, sgdPrefix)) {
+		auto path = findSgdAsset(url);
+		if (!path) return path.error();
+		return loadString(path.result());
+	}
 
 	auto writeFunc = [](char* buffer, size_t size, size_t nmemb, void* datap) {
 		size *= nmemb;
@@ -168,13 +164,15 @@ Expected<String, FileioEx> fetchString(CString url) {
 	auto r = fetch(url, writeFunc, &result);
 	if (!r) return r.error();
 
-	cacheFile(url, result.data(), result.size());
-
 	return result;
 }
 
 Expected<Data, FileioEx> fetchData(CString url) {
-	if (auto path = cacheFile(url)) return loadData(path);
+	if (startsWith(url, sgdPrefix)) {
+		auto path = findSgdAsset(url);
+		if (!path) return path.error();
+		return loadData(path.result());
+	}
 
 	auto writeFunc = [](char* buffer, size_t size, size_t nmemb, void* datap) {
 		size *= nmemb;
@@ -189,8 +187,6 @@ Expected<Data, FileioEx> fetchData(CString url) {
 	Data result;
 	auto r = fetch(url, writeFunc, &result);
 	if (!r) return r.error();
-
-	cacheFile(url, result.data(), result.size());
 
 	return result;
 }
