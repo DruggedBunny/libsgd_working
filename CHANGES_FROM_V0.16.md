@@ -59,9 +59,8 @@ Gotchas learned (kept for the write-up):
 
 ## 4. Fixes found while building (all on top of the cherry-picked work)
 
-- `core/fetch.cpp`: new asset-lookup code needed `
-` escapes in its error strings (a newline had been written
-  literally into the string constants; MSVC C2001).
+- `core/fetch.cpp`: the new asset-lookup code had real line breaks inside two string constants where a backslash-n
+  escape was intended (MSVC error C2001, "newline in string literal"); replaced with proper escapes.
 - `dawn/tests/dawn_tests.cpp`: `wgpu::Surface::GetPreferredFormat` no longer exists; use `GetCapabilities()` and take
   `formats[0]` (checking `!= wgpu::Status::Success`).
 - Nothing else needed changing: after the Dawn API port the whole tree (all libraries, tests, `sgd_dynamic.dll`) builds
