@@ -8,7 +8,7 @@ The library is coded in C++, but the primary public API is pure 'C', making it h
 
 Currently supported languages include C/C++, Blitz3D, BlitzMax, Python and node.js. Support for more languages is on the way.
 
-LibSGD is licensed under the Zlib/PNG license (see [LICENSE](LICENSE)). The libraries it uses have their own licenses, see
+LibSGD is licensed under the Zlib/PNG license (see [LICENSE.txt](LICENSE.txt)). The libraries it uses have their own licenses, see
 [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt) (regenerate with `python tools/gen_third_party_licenses.py` after a configure).
 
 
@@ -63,6 +63,19 @@ that goes in the zip.
 
 
 ### Assets
+
+IMPORTANT 'ASSETS' NOTE: Assets are located at https://www.hi-toro.com/libsgd/libsgd_assets.zip
+
+Extract them alongside libsgd_working so you have two folders:
+
+	libsgd_working
+	libsgd_assets
+
+These are copies of assets which libsgd downloaded from Mark's 'kitchen server' and cached locally, but of course this is no longer available.
+
+I believe this was done during development to minimise licensing complications with the small group of testers. Most are redistributable but it's hard to locate licensing/sources for all of them, so please don't redistribute without checking licensing. Replace assets if unsure!
+
+The assets are provided here as a convenience only. If you own any of these assets and wish for credit/licence terms to be noted (or for your assets to be removed), please let me know via 'Issues' and I'll attend to this.
 
 Assets (textures, models, sounds, fonts...) are not part of this repository. `sgd://` asset paths (used by the demos and
 tests) are resolved from local disk only; nothing is downloaded. The asset root is searched in this order:

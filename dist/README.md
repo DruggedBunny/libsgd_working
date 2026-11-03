@@ -14,7 +14,7 @@ fixing, examples, packaging and documentation.
 
 ## Licenses
 
-LibSGD is licensed under the Zlib/PNG license (`LICENSE`). The DLL statically links other open source libraries (Dawn,
+LibSGD is licensed under the Zlib/PNG license (`LICENSE.txt`). The DLL statically links other open source libraries (Dawn,
 imgui, curl, glfw, SoLoud, stb, ...), each under its own license: their notices are in `THIRD_PARTY_LICENSES.txt`.
 Redistribute that file with `sgd_dynamic.dll`.
 
