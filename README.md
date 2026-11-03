@@ -1,3 +1,84 @@
+Working build of Mark Sibly's LibSGD, his final project before his very untimely and unexpected passing. Thanks to Mark, forever my programming hero! Great guy too.
+
+
+
+**LibSGD is a Blitz3D-style library with a 'C API' which provides a fairly modern 3D game engine, rendering in D3D12 on modern Windows, with a Vulkan alternative.**
+
+
+
+This repo is based on Mark's last *develop* branch with minimal updates by Claude Code to have it work on modern setups.
+
+
+
+This project will not be highly-supported, it's just here to provide a working copy of Mark's last <u>work-in-progress</u>. (Which is actually very capable.)
+
+
+
+I have some bugfixes/additions in a separate version which I'll probably incorporate in future updates.
+
+
+
+**Important:**
+
+See notes on **Assets** below. These are needed! Some are used as defaults for environment maps, etc, some used by the demos.
+
+
+
+Source-code references to an *sgd://* path resolved to Mark's server during development, and this of course is no longer running; this version redirects *sgd://* references to a local *libsgd_assets* directory instead, but <u>you'll need to download the assets per the **Assets** note below</u>.
+
+
+
+There is a 'release' distribution under *libsgd_working\\_dist* -- this is where you should head to use LibSGD! The rest is the development environment.
+
+
+
+The demos in *_dist\libsgd\examples* are mostly BlitzMax NG, but should port easily to other 'C API' languages (Claude Code will handle that easily), but simple C, PureBasic 6.x and Python demos are included too.
+
+
+
+**BlitzMax NG DLL path**
+
+As they are sharing a single DLL (in *_dist\libsgd\lib\sgd_dynamic.dll*), the **BlitzMax NG** DLL demo paths are rather awkward:
+
+    SGD.LoadSGD "../../../lib/sgd_dynamic.dll"
+
+Normally, you should just drop a copy of sgd_dynamic.dll alongside your source code and call:
+
+    SGD.LoadSGD ()
+    
+    	or
+    
+    SGD.LoadSGD ("sgd_dynamic.dll")
+
+
+
+No need to reproduce the demo path!
+
+
+
+**Branches**
+
+Use the default branch, **develop-working**!
+
+
+
+This is the latest 'develop' branch updated to build with more modern tools/backend libraries where necessary, and remove the dependence on Mark's server. (Changes have otherwise been kept to a bare minimum.)
+
+
+
+The other branches are retained **for archival purposes only**:
+
+
+
+- **release-working** is the v0.16 rebuild. (Mark’s last 'official' release using more modern tools/libs... before I realised I should have built 'develop'!)
+
+- **main** is a mirror of Mark’s v0.16, unchanged. (Not working.)
+  **develop** is a mirror of Mark’s develop. (Not working.)
+
+- **dawn-upgrade** is an earlier experimental branch that includes extras such as shadow culling.
+
+
+
 ## LibSGD - rebuild of `develop` (v0.18.0)
 
 LibSGD is a simple game development library that provides a high level, easy to use 'scene graph' style API for writing games and apps.
@@ -64,7 +145,7 @@ that goes in the zip.
 
 ### Assets
 
-IMPORTANT 'ASSETS' NOTE: Assets are located at https://www.hi-toro.com/libsgd/libsgd_assets.zip
+IMPORTANT 'ASSETS' NOTE: Assets are located at https://www.hi-toro.com/libsgd/libsgd_assets.zip [442 MB]
 
 Extract them alongside libsgd_working so you have two folders:
 
