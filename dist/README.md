@@ -1,12 +1,16 @@
 # LibSGD for Windows (64-bit) - binary distribution
 
 LibSGD is a simple game development library with a high level 'scene graph' style API. The public API is plain C
-(`include/sgd/sgd.h`), so it can be used from C/C++, BlitzMax, PureBasic, Python (ctypes), Blitz3D and more.
+(`include/sgd/sgd.h`), so it can be used from C/C++, BlitzMax, PureBasic, Python (ctypes) and more. (C, BlitzMax, Python and PureBasic are tested
+in this distribution.)
 
-This is LibSGD **v0.18.0** (the final development state, 2 Nov 2024, by its original author Mark Sibly; the last tagged
-release was v0.16), brought back to a working state with current libraries: Dawn (WebGPU) `v20260423.175430`, curl 8.22.0, glfw 3.5.1, imgui 1.92.7, stb and tinyexr updated,
-and the defunct online asset server removed. No new engine features have been added. LibSGD is licensed under the
-Zlib/PNG license.
+This is LibSGD **v0.18.0**: a rebuild of the final development state (`develop`, 2 Nov 2024) of the library by its original
+author, Mark Sibly (the last tagged release was v0.16). It has been brought back to a working state with current libraries:
+Dawn (WebGPU) `v20260423.175430`, curl 8.22.0, glfw 3.5.1, imgui 1.92.7, and updated stb and tinyexr, and the defunct online
+asset server has been removed. No new engine features have been added. LibSGD is licensed under the Zlib/PNG license.
+
+Rebuilt by DruggedBunny with Claude (Anthropic's Claude Code, Claude Sonnet 5.5), which did much of the porting, build
+fixing, examples, packaging and documentation.
 
 ## Requirements
 
@@ -80,4 +84,4 @@ The BlitzMax wrapper `examples/blitzmax/sgd.bmx` was generated from this version
 * The log shows `File IO Error: Asset not found ... _Metalness.jpg` when loading some PBR materials. That is harmless:
   the loader looks for optional texture files and carries on without them.
 * Source code and full build instructions: https://github.com/DruggedBunny/libsgd (branch `develop-working`).
-  See `CHANGES.md` for everything that changed from the original v0.16.
+  See `CHANGES.md` for everything that was changed to get Mark's `develop` branch building again, and for what `develop` adds to v0.16.

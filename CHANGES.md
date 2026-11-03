@@ -9,6 +9,8 @@ run are made on top of it; none of the later engine work (shadow-caster culling 
 
 This file is a running log, kept so it can be turned into a Markdown document later.
 
+Rebuild done by DruggedBunny with Claude (Anthropic's Claude Code, Claude Sonnet 5.5).
+
 Build environment used: Windows 11, Visual Studio 2026 (MSVC 19.5x), CMake 4.3.3, x64, Release.
 
 ## 1. Dependency changes (`external/CMakeLists.txt`)
