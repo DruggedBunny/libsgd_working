@@ -8,7 +8,8 @@ The library is coded in C++, but the primary public API is pure 'C', making it h
 
 Currently supported languages include C/C++, Blitz3D, BlitzMax, Python and node.js. Support for more languages is on the way.
 
-LibSGD is licensed under the Zlib/PNG license.
+LibSGD is licensed under the Zlib/PNG license (see [LICENSE](LICENSE)). The libraries it uses have their own licenses, see
+[THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt) (regenerate with `python tools/gen_third_party_licenses.py` after a configure).
 
 
 ### About this fork
@@ -47,7 +48,7 @@ Later engine work from the original developer's branches (e.g. per-light shadow-
   much of the porting, dependency updates, build fixes, examples, packaging and documentation. Claude is credited on the
   commits through `Co-Authored-By` trailers.
 * Third-party libraries (see `external/CMakeLists.txt`): Dawn, imgui, curl, glfw, SoLoud, stb, tinyexr, tinygltf, json11, tcpp.
-  Each has its own license.
+  Each has its own license, reproduced in [THIRD_PARTY_LICENSES.txt](THIRD_PARTY_LICENSES.txt).
 
 Links from the original project's README, kept for reference (they may no longer be active):
 the LibSGD discussion at https://skirmish-dev.net/forum, and https://patreon.com/libsgd.
