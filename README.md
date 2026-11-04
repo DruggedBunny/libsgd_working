@@ -78,6 +78,121 @@ The other branches are retained **for archival purposes only**:
 - **dawn-upgrade** is an earlier experimental branch that includes extras such as shadow culling.
 
 
+## Sample code
+
+**BlitzMax NG code:**
+
+	Include "sgd.bmx"
+
+	SGD.LoadSGD						' Load DLL and store functions for BlitzMax NG
+	SGD.Init						' Sets up LibSGD
+
+	SGD.CreateWindow (640, 480, "Cube!", SGD.WINDOW_FLAGS_RESIZABLE)
+
+	SGD.SetClearColor 0.01, 0.01, 0.5, 1			' Background clear colour (r, g, b, alpha)
+
+	' LIGHTS!
+
+	Local light:Int = SGD.CreatePointLight ()
+
+	SGD.MoveEntity light, -5, 5, -2.5
+	SGD.SetLightRange light, 30				' Default range is only 10
+
+	' CAMERA!
+
+	Local camera:Int = SGD.CreatePerspectiveCamera ()	' Standard 3D camera
+
+	' SCENERY!
+
+	Local material:Int	= SGD.CreatePBRMaterial ()	' Basic PBR material
+	Local mesh:Int		= SGD.CreateBoxMesh (-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, material)	' Cube mesh
+	Local cube:Int		= SGD.CreateModel (mesh)	' Create 3D model from mesh
+
+	SGD.SetModelColor cube, 1, 0, 0, 1			' Change cube colour
+
+	SGD.MoveEntity cube, 0, 0, 5				' Position 5 units ahead
+	SGD.AimEntityAtEntity light, cube, 0			' Point light at cube
+
+	' ACTION!
+
+	Local events:Int					' Window event store
+
+	Repeat
+
+		events = SGD.PollEvents ()			' Read window events (mouse/keyboard)
+
+		SGD.TurnEntity cube, 0.1, 0.2, 0.4		' Spin cube
+		
+		SGD.RenderScene					' Draw the scene
+		SGD.Present					' Present it to player
+		
+	Until SGD.IsKeyHit (SGD.KEY_ESCAPE) Or events & SGD.EVENT_MASK_CLOSE_CLICKED	' Escape pressed or window closed?
+
+	SGD.Terminate						' Shut down LibSGD
+
+	End
+
+**C code:**
+
+	//
+	// Spinning red cube - C version of cube.bmx
+	//
+	// Build (MinGW-w64, from this folder; links straight against sgd_dynamic.dll):
+	//
+	//   gcc -I C:/DevTools/libsgd/libsgd/include -DSGD_DYNAMIC=1 -o cube_c.exe cube.c sgd_dynamic.dll
+	//
+
+	#include <sgd/sgd.h>
+
+	int main() {
+
+		sgd_Init();							// Sets up LibSGD
+
+		sgd_CreateWindow(640, 480, "Cube!", SGD_WINDOW_FLAGS_RESIZABLE);
+
+		sgd_SetClearColor(0.01f, 0.01f, 0.5f, 1);			// Background clear colour (r, g, b, alpha)
+
+		// LIGHTS!
+
+		SGD_Light light = sgd_CreatePointLight();
+
+		sgd_MoveEntity(light, -5, 5, -2.5);
+		sgd_SetLightRange(light, 30);					// Default range is only 10
+
+		// CAMERA!
+
+		SGD_Camera camera = sgd_CreatePerspectiveCamera();		// Standard 3D camera
+		(void)camera;
+
+		// SCENERY!
+
+		SGD_Material material = sgd_CreatePBRMaterial();		// Basic PBR material
+		SGD_Mesh mesh = sgd_CreateBoxMesh(-0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, material);	// Cube mesh
+		SGD_Model cube = sgd_CreateModel(mesh);				// Create 3D model from mesh
+
+		sgd_SetModelColor(cube, 1, 0, 0, 1);				// Change cube colour
+
+		sgd_MoveEntity(cube, 0, 0, 5);					// Position 5 units ahead
+		sgd_AimEntityAtEntity(light, cube, 0);				// Point light at cube
+
+		// ACTION!
+
+		SGD_EventMask events;						// Window event store
+
+		do {
+			events = sgd_PollEvents();				// Read window events (mouse/keyboard)
+
+			sgd_TurnEntity(cube, 0.1, 0.2, 0.4);			// Spin cube
+
+			sgd_RenderScene();					// Draw the scene
+			sgd_Present();						// Present it to player
+
+		} while (!sgd_IsKeyHit(SGD_KEY_ESCAPE) && !(events & SGD_EVENT_MASK_CLOSE_CLICKED));	// Escape pressed or window closed?
+
+		sgd_Terminate();						// Shut down LibSGD
+
+		return 0;
+	}
 
 ## LibSGD - rebuild of `develop` (v0.18.0)
 
