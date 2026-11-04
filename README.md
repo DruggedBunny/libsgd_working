@@ -73,8 +73,7 @@ The other branches are retained **for archival purposes only**:
 - **release-working** is the v0.16 rebuild. (Mark’s last 'official' release using more modern tools/libs... before I realised I should have built 'develop'!)
 
 - **main** is a mirror of Mark’s v0.16, unchanged. (Not working.)
-  **develop** is a mirror of Mark’s develop. (Not working.)
-
+- **develop** is a mirror of Mark’s develop. (Not working.)
 - **dawn-upgrade** is an earlier experimental branch that includes extras such as shadow culling.
 
 
